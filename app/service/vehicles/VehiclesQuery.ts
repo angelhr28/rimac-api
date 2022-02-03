@@ -10,9 +10,8 @@ export class VehiclesQuery {
         const conn = await connect();
     
         const isExist = await this.isExist( obj.nombre );
-        console.log( `SPECIE :::: ${ obj.nombre }  ${ JSON.stringify( isExist ) }` );
     
-        if ( isExist && isExist.length > 0 ) return isExist.id;
+        if ( isExist && isExist.length > 0 ) return isExist[0].id;
     
         const vehicle: any = await conn.query( `insert into vehiculos
                                                 set ? `, [ obj ] );

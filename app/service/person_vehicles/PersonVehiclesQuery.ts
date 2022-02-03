@@ -8,12 +8,19 @@ export class PersonVehiclesQuery {
      */
     async create( obj: PersonaVehiculoDTO ) {
         const conn = await connect();
-        
+    
         const isExist = await this.isExist( obj.vehiculo_id, obj.persona_id );
         if ( isExist && isExist.length > 0 ) return null;
-        
+    
         return await conn.query( `insert into persona_vehiculos
                                   set ? `, [ obj ] );
+    }
+    
+    async deleteOne( id: number ) {
+        const conn = await connect();
+        return await conn.query( `delete
+                                  from persona_vehiculos
+                                  where persona_id = ?`, [ id ] );
     }
     
     async isExist( vehiculo_id: number, persona_id: number ): Promise<any> {

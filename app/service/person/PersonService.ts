@@ -1,12 +1,18 @@
 import { PersonaDTO } from '../../model/dto/PersonaDTO';
 import { PersonQuery } from './PersonQuery';
+import { PersonVehiclesQuery } from '../person_vehicles/PersonVehiclesQuery';
+import { PersonSpeciesQuery } from '../person_species/PersonSpeciesQuery';
 
 export class PersonService {
     
     private person: PersonQuery;
+    private personSpecies: PersonSpeciesQuery;
+    private personVehicle: PersonVehiclesQuery;
     
     constructor() {
         this.person = new PersonQuery();
+        this.personSpecies = new PersonSpeciesQuery();
+        this.personVehicle = new PersonVehiclesQuery();
     }
     
     /**
@@ -29,12 +35,15 @@ export class PersonService {
      */
     protected async updatePerson( id: number, data: any ) {
         try {
-            const person = await this.person.findOne( id );
-            
+            const person: any = await this.person.findOne( id );
+            console.log( JSON.stringify( ' deleteOnePersonById ::::: ', person[0] ) );
+    
+            if ( person[0].length == 0 ) return null;
+    
             console.log( person );
-            const res = await this.person.update( data, id );
-            
-            console.log( res );
+            const res: any = await this.person.update( data, id );
+    
+            console.log( JSON.stringify( ' findPerson ::::: ', res[0] ) );
             return res[0];
         } catch (err) {
             console.error( err );
@@ -47,9 +56,12 @@ export class PersonService {
      */
     protected async findPerson() {
         try {
-            const res = await this.person.find();
-            console.log( res );
-            return res[0];
+            const res: any = await this.person.find();
+            console.log( JSON.stringify( ' findPerson ::::: ', res[0] ) );
+    
+            if ( res[0].length == 0 ) return null;
+    
+            return await this.buildResponse( res[0] );
         } catch (err) {
             console.error( err );
             throw err;
@@ -62,9 +74,11 @@ export class PersonService {
      */
     protected async findOnePersonById( id: number ) {
         try {
-            const res = await this.person.findOne( id );
-            console.log( res );
-            return res[0];
+            const res: any = await this.person.findOne( id );
+            console.log( JSON.stringify( ' findOnePersonById ::::: ', res[0] ) );
+            if ( res[0].length == 0 ) return null;
+    
+            return ( await this.buildResponse( res[0] ) )[0];
         } catch (err) {
             console.error( err );
             throw err;
@@ -77,8 +91,17 @@ export class PersonService {
      */
     protected async deleteOnePersonById( id: number ) {
         try {
-            const res = await this.person.deleteOne( id );
-            console.log( res );
+    
+            const person: any = await this.person.findOne( id );
+            console.log( JSON.stringify( ' deleteOnePersonById ::::: ', person[0] ) );
+    
+            if ( person[0].length == 0 ) return null;
+    
+            await this.personSpecies.deleteOne( id );
+            await this.personVehicle.deleteOne( id );
+    
+            const res: any = await this.person.deleteOne( id );
+            console.log( JSON.stringify( ' deleteOnePersonById ::::: ', res[0] ) );
             return res[0];
         } catch (err) {
             console.error( err );
@@ -86,4 +109,51 @@ export class PersonService {
         }
     }
     
+    async buildResponse( rows: any[] | any ) {
+        const filter = rows.filter( ( obj, index, self ) =>
+            index === self.findIndex( ( t ) => ( t.id === obj.id ) ),
+        );
+        
+        return filter.map( value => ( {
+            id: value.id,
+            nombre: value.nombre,
+            altura: value.altura,
+            peso: value.peso,
+            color_cabello: value.color_cabello,
+            color_piel: value.color_piel,
+            color_ojos: value.color_ojos,
+            anio_nacimiento: value.anio_nacimiento,
+            genero: value.genero,
+            especies: this.buildSpecies( value.id, rows ),
+            vehiculos: this.buildVehicles( value.id, rows ),
+        } ) );
+        
+    }
+    
+    private buildSpecies( id: number, rows: any ) {
+        let hash = {};
+        return rows.filter( row => ( row.id == id ) )
+            .map( row => ( {
+                    nombre: row.e_nombre,
+                    clasificacion: row.e_clasificacion,
+                    cargo: row.e_cargo,
+                    promedio_vida: row.e_promedio_vida,
+                    idioma: row.e_idioma,
+                } ),
+            ).filter( ( obj, index, self ) =>
+                index === self.findIndex( ( t ) => ( t.nombre === obj.nombre ) ),
+            );
+    }
+    
+    private buildVehicles( id: number, rows: any ) {
+        return rows.filter( row => ( row.id == id ) )
+            .map( row => ( {
+                    nombre: row.v_nombre,
+                    combustible: row.v_combustible,
+                    capacidad_carga: row.v_capacidad_carga,
+                } ),
+            ).filter( ( obj, index, self ) =>
+                index === self.findIndex( ( t ) => ( t.nombre === obj.nombre ) ),
+            );
+    }
 }

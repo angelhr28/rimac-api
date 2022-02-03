@@ -21,6 +21,8 @@ package:
 
 functions:
   loadData:
+    memorySize: 128
+    timeout: 60
     handler: app/handler.loadData
     events:
       - http:

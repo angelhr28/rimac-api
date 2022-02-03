@@ -23,21 +23,19 @@ export class PersonController extends PersonService {
         }
     }
     
-    
     /**
      * Crear Persona
      * @param {*} event
      * @param context
      */
     async create( event: any, context?: Context ) {
-        console.log( 'Nombre de la funcion', context.functionName );
         const params: PersonaDTO = JSON.parse( event.body );
         try {
             const response = await this.createPerson( params );
-            
-            if ( !response ) return MessageUtil.controlledError( 'El usuario ya existe.' );
-            
-            return MessageUtil.success( 'Se creo el usuario.', response );
+    
+            if ( !response ) return MessageUtil.controlledError( 'La persona ya existe.' );
+    
+            return MessageUtil.success( 'Se creo a la persona.', response );
         } catch (err) {
             console.error( err );
             return MessageUtil.error( err.message );
@@ -53,9 +51,12 @@ export class PersonController extends PersonService {
         const body: any = JSON.parse( event.body );
         
         try {
-            const respones = await this.updatePerson( id, body );
-            
-            return MessageUtil.success( 'Se modifico el usuario.', respones );
+            const result = await this.updatePerson( id, body );
+    
+            if ( !result ) {
+                return MessageUtil.controlledError( 'No se encontro la persona que desea editar' );
+            }
+            return MessageUtil.success( 'Se modifico a la persona.', result );
         } catch (err) {
             console.error( err );
             return MessageUtil.error( err.message );
@@ -69,7 +70,10 @@ export class PersonController extends PersonService {
         try {
             const rows = await this.findPerson();
             console.log( rows );
-            return MessageUtil.success( 'Se encontro los usuarios.', rows );
+            if ( !rows ) {
+                return MessageUtil.controlledError( 'No esta registrado ninguna persona' );
+            }
+            return MessageUtil.success( 'Se encontro a las persona.', rows );
         } catch (err) {
             console.error( err );
             return MessageUtil.error( err.message );
@@ -83,17 +87,19 @@ export class PersonController extends PersonService {
      */
     async findOne( event: any, context: Context ) {
         // The amount of memory allocated for the function
-        console.log( 'memoryLimitInMB: ', context.memoryLimitInMB );
         
         const id: number = Number( event.pathParameters.id );
         
         try {
             const rows = await this.findOnePersonById( id );
-            
-            return MessageUtil.success( 'Se encontro el usuario.', rows );
+    
+            if ( !rows ) {
+                return MessageUtil.controlledError( 'No se encontro a la persona' );
+            }
+    
+            return MessageUtil.success( 'Se encontro a la persona.', rows );
         } catch (err) {
             console.error( err );
-            
             return MessageUtil.error( err.message );
         }
     }
@@ -107,12 +113,12 @@ export class PersonController extends PersonService {
         
         try {
             const result = await this.deleteOnePersonById( id );
-            
-            // if ( result.deletedCount === 0 ) {
-            //     return MessageUtil.controlledError( 'No se encontro el elemento a eliminar' );
-            // }
-            
-            return MessageUtil.success( 'Se elimino el usuario.', result );
+    
+            if ( !result ) {
+                return MessageUtil.controlledError( 'No se encontro la persona que desea eliminar' );
+            }
+    
+            return MessageUtil.success( 'Se elimino a la persona.', result );
         } catch (err) {
             console.error( err );
             

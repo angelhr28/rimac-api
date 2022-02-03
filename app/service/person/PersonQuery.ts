@@ -59,9 +59,7 @@ export class PersonQuery {
                                            left join especies e on pe.especie_id = e.id
                                            left join persona_vehiculos pv on p.id = pv.persona_id
                                            left join vehiculos v on pv.vehiculo_id = v.id
-                                  where p.estado = ${ Status.ACTIVE }
-                                    and e.estado = ${ Status.ACTIVE }
-                                    and v.estado = ${ Status.ACTIVE }
+                                  where p.estado = '${ Status.ACTIVE }';
         ` );
     }
     
@@ -94,9 +92,7 @@ export class PersonQuery {
                                            left join persona_vehiculos pv on p.id = pv.persona_id
                                            left join vehiculos v on pv.vehiculo_id = v.id
                                   where p.id = ?
-                                    and p.estado = ${ Status.ACTIVE }
-                                    and e.estado = ${ Status.ACTIVE }
-                                    and v.estado = ${ Status.ACTIVE }
+                                    and p.estado = '${ Status.ACTIVE }'
         `, [ id ] );
     }
     
@@ -106,12 +102,18 @@ export class PersonQuery {
      */
     async deleteOne( id: number ) {
         const conn = await connect();
-        return await conn.query( 'DELETE FROM personas WHERE id = ?', [ id ] );
+    
+        return await conn.query( `delete
+                                  from personas
+                                  where id = ?`, [ id ] );
     }
     
     async isExist( name: string ): Promise<any> {
         const conn = await connect();
-        const res = await conn.query( 'select *  from personas WHERE nombre = ?', [ name ] );
+        const res = await conn.query( `select *
+                                       from personas
+                                       WHERE nombre = ?
+                                         and estado = '${ Status.ACTIVE }'`, [ name ] );
         return res[0];
     }
     

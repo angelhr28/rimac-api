@@ -111,7 +111,7 @@ export class RequestExternal {
             const specie: any = await specieQuery.create( sDto );
             specieId = specie != null ? specie[0].insertId : null;
     
-            console.log( `PERSONA - VEHICULOS  ${ personId }${ specieId }` );
+            console.log( `PERSONA - ESPECIE  ${ personId }${ specieId }` );
     
             if ( specieId && personId ) {
                 await RequestExternal.insertPersonEspecies( personId, specieId );

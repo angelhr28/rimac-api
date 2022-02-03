@@ -8,10 +8,13 @@ export class SpeciesQuery {
      */
     async create( obj: EspecieDTO ) {
         const conn = await connect();
-        
+    
         const isExist = await this.isExist( obj.nombre );
+    
+        console.log( `SPECIE :::: ${ obj.nombre }  ${ isExist }` );
+    
         if ( isExist && isExist.length > 0 ) return null;
-        
+    
         return await conn.query( `insert into especies
                                   set ? `, [ obj ] );
     }

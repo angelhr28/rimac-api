@@ -11,14 +11,10 @@ export class PersonQuery {
         const conn = await connect();
         
         const isExist = await this.isExist( obj.nombre );
-        console.log( 'isExist::::::  ', isExist.length );
         if ( isExist && isExist.length > 0 ) return null;
-        console.log( 'pase la pta validacion ::::::  ', ( isExist && isExist.length > 0 ) );
         
         const row = await conn.query( `insert into personas
                                        set ? `, [ obj ] );
-        // return await conn.query( `SELECT LAST_INSERT_ID()` );
-        console.log( 'RETORNO ESTO :::::  ', row );
         return row;
     }
     

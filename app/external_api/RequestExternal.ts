@@ -78,12 +78,13 @@ export class RequestExternal {
                 combustible: vehicleData.consumables,
                 tipo: vehicleData.vehicle_class,
             };
-            
+    
             const vehicle: any = await vehicleQuery.create( vDto );
             vehicleId = vehicle != null ? vehicle[0].insertId : null;
-            
+    
+            console.log( `PERSONA - VEHICULOS  ${ personId }${ vehicleId }` );
             if ( vehicleId && personId ) {
-                await this.insertPersonVehicle( personId, vehicleId );
+                await RequestExternal.insertPersonVehicle( personId, vehicleId );
             }
         }
     }
@@ -106,17 +107,19 @@ export class RequestExternal {
                 promedio_vida: RequestExternal.validateValue( specieData.average_lifespan ) ? specieData.average_lifespan : 0,
                 idioma: specieData.language,
             };
-            
+    
             const specie: any = await specieQuery.create( sDto );
             specieId = specie != null ? specie[0].insertId : null;
-            
+    
+            console.log( `PERSONA - VEHICULOS  ${ personId }${ specieId }` );
+    
             if ( specieId && personId ) {
-                await this.insertPersonEspecies( personId, specieId );
+                await RequestExternal.insertPersonEspecies( personId, specieId );
             }
         }
     }
     
-    private async insertPersonEspecies( personId: number, speciesId: number ) {
+    private static async insertPersonEspecies( personId: number, speciesId: number ) {
         const personSpecieQuery = new PersonSpeciesQuery();
         
         const psDto: PersonaEspeciesDTO = {
@@ -127,7 +130,7 @@ export class RequestExternal {
         await personSpecieQuery.create( psDto );
     }
     
-    private async insertPersonVehicle( personId: number, vehicleId: number ) {
+    private static async insertPersonVehicle( personId: number, vehicleId: number ) {
         const personVehicleQuery = new PersonVehiclesQuery();
         
         const pvDto: PersonaVehiculoDTO = {

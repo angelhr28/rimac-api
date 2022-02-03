@@ -2,3 +2,4 @@ node_modules
 .serverless
 .env.dev
 .idea
+./data_base/connection.ts

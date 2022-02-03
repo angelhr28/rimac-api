@@ -1,7 +1,8 @@
 import { PersonService } from '../service/person/PersonService';
 import { MessageUtil } from '../../utils/message';
-import { PersonaDTO } from '../model/dto/PersonaDTO';
 import { RequestExternal } from '../external_api/RequestExternal';
+import { PersonaUpdateDTO } from '../model/dto/PersonaUpdateDTO';
+import { PersonaRegisterDTO } from '../model/dto/PersonaRegisterDTO';
 
 export class PersonController extends PersonService {
     
@@ -27,8 +28,9 @@ export class PersonController extends PersonService {
      * @param {*} event
      */
     async create( event: any ) {
-        const params: PersonaDTO = JSON.parse( event.body );
+        const params: PersonaRegisterDTO = JSON.parse( event.body );
         try {
+    
             const response = await this.createPerson( params );
         
             if ( !response ) return MessageUtil.controlledError( 'La persona ya existe.' );
@@ -46,9 +48,11 @@ export class PersonController extends PersonService {
      */
     async update( event: any ) {
         const id: number = Number( event.pathParameters.id );
-        const body: any = JSON.parse( event.body );
+        const body: PersonaUpdateDTO = JSON.parse( event.body );
         
         try {
+            body.fecha_editado = new Date();
+    
             const result = await this.updatePerson( id, body );
     
             if ( !result ) {

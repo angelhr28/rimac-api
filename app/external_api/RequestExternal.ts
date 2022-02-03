@@ -34,6 +34,28 @@ export class RequestExternal {
         return await response.json();
     }
     
+    async insertPersonEspecies( personId: number, speciesId: number ) {
+        const personSpecieQuery = new PersonSpeciesQuery();
+        
+        const psDto: PersonaEspeciesDTO = {
+            especie_id: speciesId,
+            persona_id: personId,
+        };
+        
+        await personSpecieQuery.create( psDto );
+    }
+    
+    async insertPersonVehicle( personId: number, vehicleId: number ) {
+        const personVehicleQuery = new PersonVehiclesQuery();
+        
+        const pvDto: PersonaVehiculoDTO = {
+            vehiculo_id: vehicleId,
+            persona_id: personId,
+        };
+        
+        await personVehicleQuery.create( pvDto );
+    }
+    
     private async insertData() {
         const peopleQuery = new PersonQuery();
         let personId: number | null;
@@ -48,11 +70,15 @@ export class RequestExternal {
                 anio_nacimiento: value.birth_year,
                 genero: value.gender,
             };
-            
+    
             const person: any = await peopleQuery.create( pDto );
             personId = person != null ? person[0].insertId : null;
-            await this.insertVehicle( personId, value );
-            await this.insertEspecies( personId, value );
+    
+            if ( personId ) {
+                await this.insertVehicle( personId, value );
+                await this.insertEspecies( personId, value );
+            }
+    
         }
         
     }
@@ -81,8 +107,8 @@ export class RequestExternal {
     
             vehicleId = await vehicleQuery.create( vDto );
     
-            if ( vehicleId && personId ) {
-                await RequestExternal.insertPersonVehicle( personId, vehicleId );
+            if ( vehicleId ) {
+                await this.insertPersonVehicle( personId, vehicleId );
             }
         }
     }
@@ -107,32 +133,10 @@ export class RequestExternal {
             };
     
             specieId = await specieQuery.create( sDto );
-            
-            if ( specieId && personId ) {
-                await RequestExternal.insertPersonEspecies( personId, specieId );
+    
+            if ( specieId ) {
+                await this.insertPersonEspecies( personId, specieId );
             }
         }
-    }
-    
-    private static async insertPersonEspecies( personId: number, speciesId: number ) {
-        const personSpecieQuery = new PersonSpeciesQuery();
-        
-        const psDto: PersonaEspeciesDTO = {
-            especie_id: speciesId,
-            persona_id: personId,
-        };
-        
-        await personSpecieQuery.create( psDto );
-    }
-    
-    private static async insertPersonVehicle( personId: number, vehicleId: number ) {
-        const personVehicleQuery = new PersonVehiclesQuery();
-        
-        const pvDto: PersonaVehiculoDTO = {
-            vehiculo_id: vehicleId,
-            persona_id: personId,
-        };
-        
-        await personVehicleQuery.create( pvDto );
     }
 }

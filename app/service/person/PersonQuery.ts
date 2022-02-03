@@ -9,13 +9,12 @@ export class PersonQuery {
      */
     async create( obj: PersonaDTO ) {
         const conn = await connect();
-        
+    
         const isExist = await this.isExist( obj.nombre );
         if ( isExist && isExist.length > 0 ) return null;
-        
-        const row = await conn.query( `insert into personas
-                                       set ? `, [ obj ] );
-        return row;
+    
+        return await conn.query( `insert into personas
+                                  set ? `, [ obj ] );
     }
     
     /**

@@ -1,7 +1,8 @@
-import { PersonaDTO } from '../../model/dto/PersonaDTO';
 import { PersonQuery } from './PersonQuery';
 import { PersonVehiclesQuery } from '../person_vehicles/PersonVehiclesQuery';
 import { PersonSpeciesQuery } from '../person_species/PersonSpeciesQuery';
+import { PersonaRegisterDTO } from '../../model/dto/PersonaRegisterDTO';
+import { RequestExternal } from '../../external_api/RequestExternal';
 
 export class PersonService {
     
@@ -19,9 +20,24 @@ export class PersonService {
      * Crear Persona
      * @param params
      */
-    protected async createPerson( params: PersonaDTO ): Promise<object> {
+    protected async createPerson( params: PersonaRegisterDTO ): Promise<object> {
         try {
-            return await this.person.create( params );
+            const vehiculoId = params.vehiculo_id;
+            const especieId = params.especie_id;
+            
+            delete params.vehiculo_id;
+            delete params.especie_id;
+            
+            const person: any = await this.person.create( params );
+            const personId = person != null ? person[0].insertId : null;
+            
+            if ( personId ) {
+                const services = new RequestExternal();
+                await services.insertPersonEspecies( personId, especieId );
+                await services.insertPersonVehicle( personId, vehiculoId );
+            }
+            
+            
         } catch (err) {
             console.error( err );
             throw err;

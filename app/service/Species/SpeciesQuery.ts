@@ -6,17 +6,19 @@ export class SpeciesQuery {
      * Crear Especies
      * @param obj
      */
-    async create( obj: EspecieDTO ) {
+    async create( obj: EspecieDTO ): Promise<number> {
         const conn = await connect();
     
         const isExist = await this.isExist( obj.nombre );
     
-        console.log( `SPECIE :::: ${ obj.nombre }  ${ isExist }` );
+        console.log( `SPECIE :::: ${ obj.nombre }  ${ JSON.stringify( isExist ) }` );
     
-        if ( isExist && isExist.length > 0 ) return null;
+        if ( isExist && isExist.length > 0 ) return isExist.id;
     
-        return await conn.query( `insert into especies
-                                  set ? `, [ obj ] );
+        const specie: any = await conn.query( `insert into especies
+                                               set ? `, [ obj ] );
+    
+        return specie[0].insertId;
     }
     
     async isExist( name: string ): Promise<any> {

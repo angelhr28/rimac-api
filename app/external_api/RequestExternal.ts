@@ -79,8 +79,7 @@ export class RequestExternal {
                 tipo: vehicleData.vehicle_class,
             };
     
-            const vehicle: any = await vehicleQuery.create( vDto );
-            vehicleId = vehicle != null ? vehicle[0].insertId : null;
+            vehicleId = await vehicleQuery.create( vDto );
     
             console.log( `PERSONA - VEHICULOS  ${ personId }${ vehicleId }` );
             if ( vehicleId && personId ) {
@@ -108,8 +107,7 @@ export class RequestExternal {
                 idioma: specieData.language,
             };
     
-            const specie: any = await specieQuery.create( sDto );
-            specieId = specie != null ? specie[0].insertId : null;
+            specieId = await specieQuery.create( sDto );
     
             console.log( `PERSONA - ESPECIE  ${ personId }${ specieId }` );
     

@@ -1,0 +1,43 @@
+{
+  "name": "rimac-api",
+  "version": "1.0.0",
+  "description": "En esta api se mostrara informacion de la api test e inserta data en una bd remota.",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node-dev ./src/server.ts",
+    "build": "tsc",
+    "deploy": "serverless deploy"
+  },
+  "author": "Newton Angel Huamanñahui Robles",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.51",
+    "@types/express": "^4.17.12",
+    "@types/node": "^16.0.0",
+    "serverless-offline": "^5.12.1",
+    "serverless-plugin-typescript": "^2.1.1",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@types/mysql": "^2.15.20",
+    "@types/node-fetch": "^3.0.3",
+    "express": "^4.17.1",
+    "mysql2": "^2.3.3",
+    "mysql2-promise": "^0.1.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angelhr28/rimac-api.git"
+  },
+  "keywords": [
+    "Nodejs",
+    "TypeScript",
+    "ServerLess",
+    "AWS Lambda"
+  ],
+  "bugs": {
+    "url": "https://github.com/angelhr28/rimac-api/issues"
+  },
+  "homepage": "https://github.com/angelhr28/rimac-api#readme"
+}

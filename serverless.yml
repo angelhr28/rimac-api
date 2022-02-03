@@ -1,0 +1,60 @@
+service: rimac-api
+frameworkVersion: '2 || 3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: '20201221'
+  environment:
+    NODE_ENV: dev
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+custom:
+  serverless-offline:
+    noPrependStageInUrl: true
+
+package:
+  include:
+    - .env.dev
+
+functions:
+  loadData:
+    handler: app/handler.loadData
+    events:
+      - http:
+          path: load-data
+          method:
+            post
+  create:
+    handler: app/handler.create
+    events:
+      - http:
+          path: person
+          method: post
+  update:
+    handler: app/handler.update
+    events:
+      - http:
+          path: person/{id}
+          method: put
+  find:
+    handler: app/handler.find
+    events:
+      - http:
+          path: person
+          method: get
+  findOne:
+    handler: app/handler.findOne
+    events:
+      - http:
+          path: person/{id}
+          method: get
+
+  deleteOne:
+    handler: app/handler.deleteOne
+    events:
+      - http:
+          path: person/{id}
+          method: delete

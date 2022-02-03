@@ -36,14 +36,12 @@ export class PersonService {
     protected async updatePerson( id: number, data: any ) {
         try {
             const person: any = await this.person.findOne( id );
-            console.log( JSON.stringify( ' deleteOnePersonById ::::: ', person[0] ) );
     
             if ( person[0].length == 0 ) return null;
     
             console.log( person );
             const res: any = await this.person.update( data, id );
     
-            console.log( JSON.stringify( ' findPerson ::::: ', res[0] ) );
             return res[0];
         } catch (err) {
             console.error( err );
@@ -57,8 +55,6 @@ export class PersonService {
     protected async findPerson() {
         try {
             const res: any = await this.person.find();
-            console.log( JSON.stringify( ' findPerson ::::: ', res[0] ) );
-    
             if ( res[0].length == 0 ) return null;
     
             return await this.buildResponse( res[0] );
@@ -75,7 +71,6 @@ export class PersonService {
     protected async findOnePersonById( id: number ) {
         try {
             const res: any = await this.person.findOne( id );
-            console.log( JSON.stringify( ' findOnePersonById ::::: ', res[0] ) );
             if ( res[0].length == 0 ) return null;
     
             return ( await this.buildResponse( res[0] ) )[0];
@@ -93,7 +88,6 @@ export class PersonService {
         try {
     
             const person: any = await this.person.findOne( id );
-            console.log( JSON.stringify( ' deleteOnePersonById ::::: ', person[0] ) );
     
             if ( person[0].length == 0 ) return null;
     
@@ -101,7 +95,6 @@ export class PersonService {
             await this.personVehicle.deleteOne( id );
     
             const res: any = await this.person.deleteOne( id );
-            console.log( JSON.stringify( ' deleteOnePersonById ::::: ', res[0] ) );
             return res[0];
         } catch (err) {
             console.error( err );
@@ -131,7 +124,6 @@ export class PersonService {
     }
     
     private buildSpecies( id: number, rows: any ) {
-        let hash = {};
         return rows.filter( row => ( row.id == id ) )
             .map( row => ( {
                     nombre: row.e_nombre,

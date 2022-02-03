@@ -81,7 +81,6 @@ export class RequestExternal {
     
             vehicleId = await vehicleQuery.create( vDto );
     
-            console.log( `PERSONA - VEHICULOS  ${ personId }${ vehicleId }` );
             if ( vehicleId && personId ) {
                 await RequestExternal.insertPersonVehicle( personId, vehicleId );
             }
@@ -108,9 +107,7 @@ export class RequestExternal {
             };
     
             specieId = await specieQuery.create( sDto );
-    
-            console.log( `PERSONA - ESPECIE  ${ personId }${ specieId }` );
-    
+            
             if ( specieId && personId ) {
                 await RequestExternal.insertPersonEspecies( personId, specieId );
             }

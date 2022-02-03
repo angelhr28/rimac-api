@@ -1,4 +1,3 @@
-import { Context } from 'aws-lambda';
 import { PersonService } from '../service/person/PersonService';
 import { MessageUtil } from '../../utils/message';
 import { PersonaDTO } from '../model/dto/PersonaDTO';
@@ -26,15 +25,14 @@ export class PersonController extends PersonService {
     /**
      * Crear Persona
      * @param {*} event
-     * @param context
      */
-    async create( event: any, context?: Context ) {
+    async create( event: any ) {
         const params: PersonaDTO = JSON.parse( event.body );
         try {
             const response = await this.createPerson( params );
-    
+        
             if ( !response ) return MessageUtil.controlledError( 'La persona ya existe.' );
-    
+        
             return MessageUtil.success( 'Se creo a la persona.', response );
         } catch (err) {
             console.error( err );
@@ -69,7 +67,6 @@ export class PersonController extends PersonService {
     async find() {
         try {
             const rows = await this.findPerson();
-            console.log( rows );
             if ( !rows ) {
                 return MessageUtil.controlledError( 'No esta registrado ninguna persona' );
             }
@@ -83,16 +80,15 @@ export class PersonController extends PersonService {
     /**
      * Buscar Persona por id
      * @param event
-     * @param context
      */
-    async findOne( event: any, context: Context ) {
+    async findOne( event: any ) {
         // The amount of memory allocated for the function
         
         const id: number = Number( event.pathParameters.id );
         
         try {
             const rows = await this.findOnePersonById( id );
-    
+            
             if ( !rows ) {
                 return MessageUtil.controlledError( 'No se encontro a la persona' );
             }

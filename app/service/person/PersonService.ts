@@ -36,8 +36,7 @@ export class PersonService {
                 await services.insertPersonEspecies( personId, especieId );
                 await services.insertPersonVehicle( personId, vehiculoId );
             }
-            
-            
+            return personId;
         } catch (err) {
             console.error( err );
             throw err;

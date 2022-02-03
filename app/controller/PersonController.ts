@@ -35,7 +35,7 @@ export class PersonController extends PersonService {
         
             if ( !response ) return MessageUtil.controlledError( 'La persona ya existe.' );
         
-            return MessageUtil.success( 'Se creo a la persona.', response );
+            return MessageUtil.success( 'Se creo a la persona.' );
         } catch (err) {
             console.error( err );
             return MessageUtil.error( err.message );
@@ -58,7 +58,7 @@ export class PersonController extends PersonService {
             if ( !result ) {
                 return MessageUtil.controlledError( 'No se encontro la persona que desea editar' );
             }
-            return MessageUtil.success( 'Se modifico a la persona.', result );
+            return MessageUtil.success( 'Se modifico a la persona.' );
         } catch (err) {
             console.error( err );
             return MessageUtil.error( err.message );

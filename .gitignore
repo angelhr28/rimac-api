@@ -4,4 +4,4 @@ node_modules
 .env.dev
 .idea
 ./data_base/connection.ts
-./lib
+/lib
